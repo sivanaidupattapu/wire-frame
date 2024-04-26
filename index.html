@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="items.js"></script>
+</head>
+
+<body>
+
+    <div class="d-flex justify-content-around text-danger-emphasis"><h2>Wire frame of resturant food using Web page</h2></div>
+    <div class="d-flex">
+        <h5 class="w-50 text text-center text-danger">Items</h5>
+        <h5 class="w-25 text-center  text-success">Selected Items</h5>
+        <h5 class="w-25 text-center  text-warning">Quantity</h5>
+        <h5 class="w-25 text-center  text-success-emphasis">Quantity Price ₹</h5>
+        <h5 class="w-25 text-center  text-info">Total price ₹</h5>
+    </div>
+    <div class="d-flex border border-info">
+        <div class="w-50 border border-primary">
+            <ul id="items" ; class="text text-dark"></ul>
+        </div>
+        <div class="w-25 border border-success">
+            <ul id="selecteditems" ; class="text text-dark"></ul>
+        </div>
+        <div class="w-25 border border-warning">
+            <ul id="price" class="text text-dark"></ul>
+        </div>
+        <div class="w-25 border border-secondary">
+            <ul id="totalp" class="text text-dark"></ul>
+        </div>
+        <div class="w-25 border border-secondary">
+            <ul id="totaL" class="text text-dark"></ul>
+        </div>
+
+    </div>
+    <script>
+
+        for (let k in items) {
+            var ili = document.createElement('li')
+            ili.style.color='purple'
+            ili.innerHTML = k;
+            var newUL = document.createElement('ul')
+            items[k].forEach(function (a, i) {
+                var p = document.createElement('li')
+                p.innerHTML = a.itemname;
+                p.className='text-primary-emphasis'
+
+                var CHECK = document.createElement('input');
+                CHECK.type = 'checkbox';
+                CHECK.onchange = (function (e) {
+                    items[k][i].selected = e.target.checked;
+                    console.log(items)
+                    Getnewcart()
+                })
+                p.appendChild(CHECK)
+                newUL.appendChild(p)
+            })
+            document.getElementById('items').appendChild(ili)
+            ili.appendChild(newUL)
+
+
+        }
+
+        function Getnewcart() {
+            document.getElementById('selecteditems').innerHTML = '';
+            document.getElementById('price').innerHTML = '';
+            document.getElementById('totalp').innerHTML = '';
+            document.getElementById('totaL').innerHTML = '';
+            var ar = [];
+
+            for (let k in items) {
+                var ili = document.createElement('li')
+                ili.classList = "text text-primary"
+                ili.innerHTML = k;
+                var newUL = document.createElement('ol')
+                items[k].forEach(function (a, i) {
+                    if (a.selected) {
+                        var p = document.createElement('li');
+                        p.className = "text text-dark";
+                        p.innerHTML = (a.itemname)
+                        newUL.appendChild(p);
+
+                        //display quantity
+                        var quantity = document.createElement('li');
+                        quantity.style.listStyle='circle'
+                        quantity.innerHTML = (a.itemname + ' ' + a.Quantity + ' ' + a.Quantityunits)
+                        document.getElementById('price').appendChild(quantity)
+
+                        //price calucaltion
+
+
+                        var totalprice = document.createElement('li');
+                        totalprice.style.listStyle='square'
+                        totalprice.innerHTML = a.Quantity * a.price + ' ₹/-';
+                        document.getElementById('totalp').appendChild(totalprice)
+                        console.log(totalprice)
+
+
+
+                        // increament
+
+                        var btn1 = document.createElement('button')
+                        btn1.innerHTML = '+';
+                        btn1.classList = 'border border-3 bg-success-subtle'
+                        btn1.onclick = function () {
+                            a.Quantity++;
+                            btn1.classList = 'bg-success'
+                            Getnewcart()
+                        }
+                        newUL.appendChild(btn1)
+
+                        var spn = document.createElement('span');
+                        spn.innerHTML = a.Quantity;
+                        newUL.appendChild(spn)
+                        //decrease
+
+                        var btn2 = document.createElement('button');
+                        btn2.innerHTML = '-';
+                        btn2.classList = 'border border-3 bg-danger-subtle'
+                        btn2.onclick = function () {
+                            if(a.Quantity>0){
+                                a.Quantity--;
+                                Getnewcart()
+                            }
+                            else alert('Please select Quantity minimum 1kg') 
+                        }
+                        newUL.appendChild(btn2)
+
+                        ///// total price////////
+
+
+                        ar.push(totalprice.innerHTML);
+
+                        var toTaL = ar.reduce(function (a, b) {
+                            return a + parseInt(b);
+                        }, 0)
+                        console.log(ar)
+                        console.log(toTaL)
+                        document.getElementById('totaL').innerHTML ='Total bill ='+ toTaL + ' ₹/-'
+                    }
+
+                })
+                document.getElementById('selecteditems').appendChild(ili)
+                ili.appendChild(newUL)
+            }
+        }
+
+    </script>
+</body>
+
+</html>
